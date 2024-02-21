@@ -10,6 +10,9 @@
 #ifndef __D_T_BOW_VECTOR__
 #define __D_T_BOW_VECTOR__
 
+#include <iostream>
+#include <string>
+#include <stddef.h>
 #include <map>
 #include <vector>
 #include "exports.h"
