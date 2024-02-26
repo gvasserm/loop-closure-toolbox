@@ -24,6 +24,15 @@ else ()
     message(FATAL_ERROR "OpenCV >= 3.3.1 not found")
 endif ()
 
+
+#################################
+#
+#             DBoW2
+#
+#################################
+set(DBOW2_DIRS ../DBoW2/include)
+set(DBOW2_LIBS DBoW2)
+
 #################################
 #
 #             DBoW3
