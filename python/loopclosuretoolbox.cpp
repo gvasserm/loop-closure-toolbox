@@ -173,6 +173,14 @@ PYBIND11_MODULE(loopclosuretoolbox, m) {
         self.create(features);
       },
       py::arg("training_features"));
+
+  vocab_dbow.def(
+      "load",
+      [](DBoW3::Vocabulary &self, const std::string &filename) {
+        self.load(filename);
+      },
+      py::arg("filename"));
+  
   vocab_dbow.def(
       "save",
       [](DBoW3::Vocabulary &self, const std::string &filename, bool binary) {
@@ -267,6 +275,8 @@ PYBIND11_MODULE(loopclosuretoolbox, m) {
     ss << self;
     return ss.str();
   });
+
+  //----------------------VLAD-------------------------------
 
   py::class_<VLAD::Vocabulary> vocab_vlad(m_vlad, "Vocabulary");
   vocab_vlad.def(py::init<const std::string &>()); // load from file

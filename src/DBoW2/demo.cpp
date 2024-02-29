@@ -105,8 +105,8 @@ void testDatabase()
     std::vector<std::string> test_names;
     std::vector<std::string> query_names;
 
-    std::string test_dir = "/home/gvasserm/dev/rtabmap/data/samples/";
-    std::string query_dir = "/home/gvasserm/dev/rtabmap/data/samples/"; 
+    std::string test_dir = "/home/gvasserm/dev/VPR-methods-evaluation/VPR-datasets-downloader/datasets/st_lucia/images/test/database";
+    std::string query_dir = "/home/gvasserm/dev/VPR-methods-evaluation/VPR-datasets-downloader/datasets/st_lucia/images/test/queries"; 
     
     get_files(test_dir, test_names);
 	  std::sort(test_names.begin(), test_names.end());
@@ -118,6 +118,7 @@ void testDatabase()
     std::string strVocFile = "/home/gvasserm/dev/ORB_SLAM2/Vocabulary/ORBvoc.txt";
     ORBVocabulary *mpVocabulary = new ORBVocabulary();
     bool bVocLoad = mpVocabulary->loadFromTextFile(strVocFile);
+    mpVocabulary->save("./config/orb_slam_10_5.yaml");
 
     if(!bVocLoad)
     {

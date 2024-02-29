@@ -10,6 +10,9 @@ set(LIBRARIES ${DBOW_LIBS} ${VLAD_LIBS} stdc++fs)
 add_executable(test_dbow_database test_dbow_database.cpp)
 target_link_libraries(test_dbow_database ${LIBRARIES})
 
+add_executable(test_dbow_rtabmap test_dbow_rtabmap.cpp)
+target_link_libraries(test_dbow_rtabmap ${LIBRARIES})
+
 add_executable(test_dbow_transform test_dbow_transform.cpp)
 target_link_libraries(test_dbow_transform ${LIBRARIES})
 
