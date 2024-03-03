@@ -9,14 +9,14 @@ void testVLADDDatabase() {
 
   PRINT_YELLOW("[Loading vocabulary] start");
   std::cout << "Current path is " << fs::current_path() << '\n';
-  VLAD::Database db("../../config/sthereo_01_rgb_4_3.yaml");
+  VLAD::Database db("./config/sthereo_07_rgb_4_3.yaml");
   std::cout << db << std::endl;
   PRINT_GREEN("[Loading vocabulary] end\n");
 
 
   PRINT_YELLOW("[VLAD::Database::add] start");
   auto orb = cv::ORB::create();
-  std::vector<std::string> paths = std::move(loadImagePaths("../../assets/01"));
+  std::vector<std::string> paths = std::move(loadImagePaths("./assets/01"));
   for (auto &path : paths) {
     cv::Mat image = cv::imread(path, cv::IMREAD_GRAYSCALE);
     std::vector<cv::KeyPoint> keypoints;
@@ -36,7 +36,7 @@ void testVLADDDatabase() {
     orb->detectAndCompute(image, cv::Mat(), keypoints, descriptor);
 
     VLAD::QueryResults results;
-    db.query(descriptor, results, 5);
+    db.query(descriptor, results, -1);
 
     std::cout << "Query results: " << results << std::endl;
     break;

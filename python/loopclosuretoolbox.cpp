@@ -223,6 +223,20 @@ PYBIND11_MODULE(loopclosuretoolbox, m) {
       return py_bow_vector;
     },
     py::arg("features"));
+  // vocab_dbow.def(
+  //   "score",
+  //   [](DBoW3::Vocabulary &self, py::list &py_bow_vector1, py::list &py_bow_vector2) {
+  //     DBoW3::BowVector bow_vector1;
+  //     DBoW3::BowVector bow_vector2;
+  //     float score = self.score(bow_vector1, bow_vector1);
+  //     // convert bow_vector to pair of (key, value)
+  //     py::list py_bow_vector;
+  //     for (const auto &key_value : py_bow_vector1) {
+  //       py_bow_vector.append(py::make_tuple(key_value.first, key_value.second));
+  //     }
+  //     return py_bow_vector;
+  //   },
+  //   py::arg("score"));
   vocab_dbow.def("__repr__", [](DBoW3::Vocabulary &self) {
     std::stringstream ss;
     ss << self;

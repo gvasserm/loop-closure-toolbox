@@ -19,85 +19,54 @@ def get_descriptors(img_path):
 
     return keypoints, descriptors
 
-def test_likelihood2():
+def test_likelihood():
 
-    orig = pd.read_csv("/home/gvasserm/dev/rtabmap/results/orig_41.csv").values
-    new = pd.read_csv("/home/gvasserm/dev/rtabmap/results/new_41.csv").values
+    ind = 50
+    data_orig = json.load(open("/home/gvasserm/dev/rtabmap/results/orig_maps_" + str(ind) +".json", "r"))
+    data_new = json.load(open("/home/gvasserm/dev/rtabmap/results/new_maps_"+ str(ind) +".json", "r"))
 
-    plt.plot(orig[:,0], orig[:,1], 'b', label='orig')
-    plt.plot(new[:,0], new[:,1], 'r',  label='dbow3')
+    data_orig = {d[0]: {d_[0]: d_[1] for d_ in d[1]}  for d in data_orig}
+    data_new = {d[0]: {d_[0]: d_[1] for d_ in d[1]}  for d in data_new}
+
+    data_new_ = {}
+    q = data_new[ind]
+    for k, d in data_new.items():
+        if k!=ind:
+            data_new_[k] = {}
+            for ki in d.keys():
+                if ki in q:
+                  data_new_[k][ki] = data_new[k][ki]
+
+
+    origc = {k: len(d) for k, d in data_orig.items()}
+    newc = {k: len(d) for k, d in data_new_.items()}
+
+    x, y  = np.asarray(list(origc.keys())), np.asarray(list(origc.values()))
+    #y = y/np.max(y)
+    plt.plot(x, y, '-b*', label='orig')
+    x, y  = np.asarray(list(newc.keys())), np.asarray(list(newc.values()))
+    #y = y/np.max(y)
+    plt.plot(x, y, '-ro',  label='dbow3')
 
     plt.xlabel('frame')
     plt.ylabel('similarity')
     plt.legend()
 
     plt.show()
+    
+    new = pd.read_csv("/home/gvasserm/dev/rtabmap/results/orig_41.csv").values
+    orig = pd.read_csv("/home/gvasserm/dev/rtabmap/results/new_41.csv").values
 
-    return
+    new[:,1] = new[:,1]/np.max(new[:,1])
+    orig[:,1] = orig[:,1]/np.max(orig[:,1])
+    
+    plt.plot(orig[:,0], orig[:,1], '-b*', label='orig')
+    plt.plot(new[:,0], new[:,1], '-ro',  label='dbow3')
 
+    plt.xlabel('frame')
+    plt.ylabel('similarity')
+    plt.legend()
 
-def test_likelihood():
-
-    l1 = [
-    0,
-    0.00221442897,
-    0.00631062873,
-    0.0528649986,
-    0.111102439,
-    0.0157463159,
-    0.0294886846,
-    0.0172728747,
-    0.0037086932,
-    0.00109040202,
-    0.0139884157,
-    0,
-    0.00676934142,
-    0.0180716105,
-    0.0206441693,
-    0.0222150274,
-    0.0282951407,
-    0.00891886093,
-    0.0112095382,
-    0.0243066512,
-    0.00190337386,
-    0.00915507507,
-    0.00751958042,
-    0.00511058606,
-    0.00891865231,
-    0.0011555755]
-
-    l2= [
-    0,
-    0.0163583681,
-    0.0295074414,
-    0.0679838881,
-    0.0732325092,
-    0.0223484002,
-    0.0345624201,
-    0.0446537174,
-    0.0437642559,
-    0.048365742,
-    0.0486412533,
-    0,
-    0.0367015526,
-    0.0596003532,
-    0.024829343,
-    0.0572041757,
-    0.0509382337,
-    0.0382721908,
-    0.0242173392,
-    0.0687983558,
-    0.0406152382,
-    0.0593217611,
-    0.0343320966,
-    0.0308367275,
-    0.0471370742,
-    0.0442986712]
-
-
-    plt.figure()
-    plt.plot(l1, 'r')
-    plt.plot(l2, 'b')
     plt.show()
 
     return
@@ -154,10 +123,11 @@ def test():
     #voc = dbow.Vocabulary("./config/config/orb_slam_10_5.yaml")
     
     voc = dbow.Vocabulary(10, 5)
-    voc.load("./config/orbvoc.dbow3")
+    #voc.load("./config/orbvoc.dbow3")
+    voc.load("./config/test_rgb_10_5.yaml")
 
     # create Vocabulary instance from file path
-    db = dbow.Database(voc, False, 0)
+    db = dbow.Database(voc, False)
 
     dir_path = "/home/gvasserm/dev/rtabmap/data/samples"
     query_images = sorted(utils.load_images_from_folder(dir_path, full_path=False), key=utils.sort_key)
@@ -206,6 +176,6 @@ def test():
 
 if __name__ == '__main__':
     #test()
+    #test_voc()
     #benchmark()
-    #test_likelihood()
-    test_likelihood2()
+    test_likelihood()

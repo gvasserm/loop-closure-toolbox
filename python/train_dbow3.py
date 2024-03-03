@@ -22,7 +22,7 @@ def load_images_from_folder(folder):
 def get_descriptors(img_path):
     image = cv2.imread(img_path)
     # Initialize ORB detector
-    orb = cv2.ORB_create()
+    orb = cv2.ORB_create(500)
     # Detect keypoints
     keypoints = orb.detect(image, None)
     # Compute descriptors
@@ -33,7 +33,7 @@ def get_descriptors(img_path):
 def train():
 
     # # or create Vocabulary later
-    voc = dbow.Vocabulary(8, 4) # k=10, l=5
+    voc = dbow.Vocabulary(10, 5, dbow.WeightingType.TF_IDF, dbow.ScoringType.L1_NORM) # k=10, l=5
     training_features = []
     # voc_created.create(training_features)
 
@@ -45,7 +45,7 @@ def train():
             training_features.append(descriptors)
     
     voc.create(training_features)
-    voc.save("./config/test_rgb_8_4.yaml", True)
+    voc.save("./config/test_rgb_10_5.yaml", True)
 
 if __name__ == '__main__':
     train()
