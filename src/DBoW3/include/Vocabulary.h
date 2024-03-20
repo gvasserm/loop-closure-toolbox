@@ -25,6 +25,42 @@
 #include "ScoringObject.h"
 #include <limits>
 namespace DBoW3 {
+
+  /// Tree node
+  struct Node 
+  {
+    /// Node id
+    NodeId id;
+    /// Weight if the node is a word
+    WordValue weight;
+    /// Children 
+    std::vector<NodeId> children;
+    /// Parent node (undefined in case of root)
+    NodeId parent;
+    /// Node descriptor
+    cv::Mat descriptor;
+
+    /// Word id if the node is a word
+    WordId word_id;
+
+    /**
+     * Empty constructor
+     */
+    Node(): id(0), weight(0), parent(0), word_id(0){}
+    
+    /**
+     * Constructor
+     * @param _id node id
+     */
+    Node(NodeId _id): id(_id), weight(0), parent(0), word_id(0){}
+
+    /**
+     * Returns whether the node is a leaf node
+     * @return true iff the node is a leaf
+     */
+    inline bool isLeaf() const { return children.empty(); }
+  };
+
 ///   Vocabulary
 class DBOW_API Vocabulary
 {		
@@ -310,45 +346,21 @@ public:
   void toStream(  std::ostream &str, bool compressed=true) const;
   void fromStream(  std::istream &str );
 
+  /**
+   * Returns the word id associated to a feature
+   * @param feature
+   * @param id (out) word id
+   * @param weight (out) word weight
+   * @param nid (out) if given, id of the node "levelsup" levels up
+   * @param levelsup
+   */
+  virtual void transform(const cv::Mat &feature,
+    WordId &id, WordValue &weight, NodeId* nid  , int levelsup = 0) const;
+
  protected:
 
   ///  reference to descriptor
   typedef const cv::Mat pDescriptor;
-
-  /// Tree node
-  struct Node 
-  {
-    /// Node id
-    NodeId id;
-    /// Weight if the node is a word
-    WordValue weight;
-    /// Children 
-    std::vector<NodeId> children;
-    /// Parent node (undefined in case of root)
-    NodeId parent;
-    /// Node descriptor
-    cv::Mat descriptor;
-
-    /// Word id if the node is a word
-    WordId word_id;
-
-    /**
-     * Empty constructor
-     */
-    Node(): id(0), weight(0), parent(0), word_id(0){}
-    
-    /**
-     * Constructor
-     * @param _id node id
-     */
-    Node(NodeId _id): id(_id), weight(0), parent(0), word_id(0){}
-
-    /**
-     * Returns whether the node is a leaf node
-     * @return true iff the node is a leaf
-     */
-    inline bool isLeaf() const { return children.empty(); }
-  };
 
 protected:
 
@@ -365,16 +377,6 @@ protected:
   void getFeatures(const std::vector<std::vector<cv::Mat> > &training_features,
     std::vector<cv::Mat> &features) const;
 
-  /**
-   * Returns the word id associated to a feature
-   * @param feature
-   * @param id (out) word id
-   * @param weight (out) word weight
-   * @param nid (out) if given, id of the node "levelsup" levels up
-   * @param levelsup
-   */
-  virtual void transform(const cv::Mat &feature,
-    WordId &id, WordValue &weight, NodeId* nid  , int levelsup = 0) const;
   /**
    * Returns the word id associated to a feature
    * @param feature
@@ -470,7 +472,7 @@ protected:
   std::vector<Node*> m_words;
 public:
   //for debug (REMOVE)
-  inline Node* getNodeWord(uint32_t idx){return m_words[idx];}
+  inline Node* getNodeWord(unsigned int idx){return m_words[idx];}
 
 };
 

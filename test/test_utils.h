@@ -9,7 +9,7 @@ namespace fs = std::experimental::filesystem;
 std::vector<std::string> loadImagePaths(const std::string &directory) {
   std::vector<std::string> images;
   for (auto &p : fs::directory_iterator(directory)) {
-    if (p.path().extension() == ".png") {
+    if (p.path().extension() == ".jpg") {
       images.emplace_back(p.path().string());
     }
   }

@@ -21,3 +21,6 @@ target_link_libraries(test_vlad_database ${LIBRARIES})
 
 add_executable(test_vlad_transform test_vlad_transform.cpp)
 target_link_libraries(test_vlad_transform ${LIBRARIES})
+
+add_executable(vlad vlad.cpp)
+target_link_libraries(vlad ${LIBRARIES})

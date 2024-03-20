@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 def get_descriptors(img_path):
     image = cv2.imread(img_path)
     # Initialize ORB detector
-    orb = cv2.ORB_create()
+    orb = cv2.ORB_create(2000)
     # Detect keypoints
     keypoints = orb.detect(image, None)
     # Compute descriptors
@@ -71,6 +71,28 @@ def test_likelihood():
 
     return
 
+def test_like():
+
+    ind = 181
+
+    new = pd.read_csv(f"/home/gvasserm/dev/aicv_amr_ws/results/new_{ind}.csv").values
+    orig = pd.read_csv(f"/home/gvasserm/dev/aicv_amr_ws/results/orig_{ind}.csv").values
+
+    new[:,1] = new[:,1]/np.max(new[:,1])
+    orig[:,1] = orig[:,1]/np.max(orig[:,1])
+    
+    # plt.plot(orig[:,0], orig[:,1], '-b*', label='orig')
+    # plt.plot(new[:,0], new[:,1], '-ro',  label='dbow3')
+
+    plt.plot(orig[:,0], orig[:,1], '-b*', label='dbow3')
+    plt.plot(new[:,0], new[:,1], '-ro',  label='orig')
+
+    plt.xlabel('frame')
+    plt.ylabel('similarity')
+    plt.legend()
+
+    plt.show()
+
 def benchmark():
     from performance_comparison import performance_comparison
     dataset_name = 'sample'
@@ -122,19 +144,20 @@ def test():
     #voc = dbow.Vocabulary("./config/test_rgb_8_4.yaml")
     #voc = dbow.Vocabulary("./config/config/orb_slam_10_5.yaml")
     
-    voc = dbow.Vocabulary(10, 5)
+    #voc = dbow.Vocabulary(10, 5)
     #voc.load("./config/orbvoc.dbow3")
-    voc.load("./config/test_rgb_10_5.yaml")
+    #voc.load("./config/test_rgb_10_5.yaml")
+    voc = dbow.Vocabulary("./config/mapping_10_5.yaml")
 
     # create Vocabulary instance from file path
     db = dbow.Database(voc, False)
 
-    dir_path = "/home/gvasserm/dev/rtabmap/data/samples"
+    dir_path = "/home/gvasserm/dev/aicv_amr_ws/results/"
     query_images = sorted(utils.load_images_from_folder(dir_path, full_path=False), key=utils.sort_key)
     dictq = {i: q for i, q in enumerate(query_images)}
     dictqi = {value: key for key, value in dictq.items()}
     # add entries to Database
-    for image in query_images[:40]:
+    for image in query_images[:200]:
         keypoints, descriptors = get_descriptors(os.path.join(dir_path, image)) # user's implementation
         if descriptors is not None:
             db.add(descriptors)
@@ -142,9 +165,9 @@ def test():
             descriptors = np.zeros((500, 32)).astype(np.uint8)
             db.add(descriptors)
 
-    pscore = db.compute_pairwise_score()
-    # cv2.imshow('pscore', pscore)
-    # cv2.waitKey(0)
+    #pscore = db.compute_pairwise_score()
+    #cv2.imshow('pscore', pscore)
+    #cv2.waitKey(0)
 
     res = {}
     for idx, query_image in enumerate([query_images[41]]):
@@ -175,7 +198,8 @@ def test():
     return
 
 if __name__ == '__main__':
-    #test()
+    test()
     #test_voc()
     #benchmark()
-    test_likelihood()
+    #test_likelihood()
+    #test_like()

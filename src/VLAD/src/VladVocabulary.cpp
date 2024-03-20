@@ -21,6 +21,7 @@ namespace VLAD {
 
 Vocabulary::Vocabulary(std::shared_ptr<DBoW3::Vocabulary> vocabulary)
     : vocabulary_(std::move(vocabulary)),
+      _levelUp(vocabulary_->getDepthLevels()),
       d_length_(vocabulary_->getDescriptorSize()),
       clusters_n_(static_cast<int>(pow(vocabulary_->getBranchingFactor(),
                                        vocabulary_->getDepthLevels()))),
@@ -28,8 +29,20 @@ Vocabulary::Vocabulary(std::shared_ptr<DBoW3::Vocabulary> vocabulary)
                                      vocabulary_->getDepthLevels()) *
                                  vocabulary_->getDescriptorSize() * 8)) {}
 
+
+  // Vocabulary::Vocabulary(std::shared_ptr<DBoW3::Vocabulary> vocabulary, int levelUp)
+  //   : vocabulary_(std::move(vocabulary)),
+  //     _levelUp(levelUp),
+  //     d_length_(vocabulary_->getDescriptorSize()),
+  //     clusters_n_(static_cast<int>(pow(vocabulary_->getBranchingFactor(),
+  //                                      _levelUp))),
+  //     v_length_(static_cast<int>(pow(vocabulary_->getBranchingFactor(),
+  //                                    _levelUp) *
+  //                                vocabulary_->getDescriptorSize() * 8)) {}
+
 Vocabulary::Vocabulary(const std::string &vocabulary_path)
     : vocabulary_(std::make_shared<DBoW3::Vocabulary>(vocabulary_path)),
+      _levelUp(vocabulary_->getDepthLevels()),
       d_length_(vocabulary_->getDescriptorSize()),
       clusters_n_(static_cast<int>(pow(vocabulary_->getBranchingFactor(),
                                        vocabulary_->getDepthLevels()))),
@@ -38,7 +51,9 @@ Vocabulary::Vocabulary(const std::string &vocabulary_path)
                                  vocabulary_->getDescriptorSize() * 8)) {}
 
 Vocabulary::Vocabulary(const Vocabulary &other)
-    : vocabulary_(std::move(other.vocabulary_)), d_length_(other.d_length_),
+    : vocabulary_(std::move(other.vocabulary_)), 
+      _levelUp(vocabulary_->getDepthLevels()),
+      d_length_(other.d_length_),
       clusters_n_(other.clusters_n_), v_length_(other.v_length_) {}
 
 // --------------------------------------------------------------------------
@@ -49,8 +64,20 @@ void Vocabulary::findCentroid(const cv::Mat &desc, cv::Mat &centroid,
     std::cerr << "Vocabulary is empty!" << std::endl;
     exit(1);
   }
+  
   id_centroid = vocabulary_->transform(desc);
+
+  // DBoW3::WordId word_id;
+  // DBoW3::WordValue weight;
+  // DBoW3::NodeId *nid;
+  
+  //vocabulary_->transform(desc, word_id, weight, nid, _levelUp-1);
+  // id_centroid = *nid;
+  // DBoW3::Node* node = vocabulary_->getNodeWord(*nid);
+  // node->descriptor.convertTo(centroid, CV_8UC1);
+  
   vocabulary_->getWord(id_centroid).convertTo(centroid, CV_8UC1);
+  return;
 }
 
 // --------------------------------------------------------------------------

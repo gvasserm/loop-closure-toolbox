@@ -7,14 +7,14 @@
 void testTrasformVLAD() {
   PRINT_YELLOW("testing VLAD::Vocabulary::transform");
   // load vocabulary
-  DBoW3::Vocabulary dbow_vocab("../../config/sthereo_01_rgb_4_3.yaml");
+  DBoW3::Vocabulary dbow_vocab("./config/orbvoc.dbow3");
   VLAD::Vocabulary vlad_vocab(std::make_shared<DBoW3::Vocabulary>(dbow_vocab));
   std::cout << vlad_vocab << std::endl;
 
   auto orb = cv::ORB::create();
 
-  std::vector<std::string> paths = std::move(loadImagePaths("../../assets/01"));
-  cv::Mat image = cv::imread(paths[0], cv::IMREAD_GRAYSCALE);
+  std::vector<std::string> paths = std::move(loadImagePaths("/home/gvasserm/dev/rtabmap/data/samples/"));
+  cv::Mat image = cv::imread(paths[2], cv::IMREAD_GRAYSCALE);
   std::vector<cv::KeyPoint> keypoints;
   cv::Mat descriptor;
   orb->detectAndCompute(image, cv::Mat(), keypoints, descriptor);
@@ -27,14 +27,14 @@ void testTrasformVLAD() {
 void testScoreVLAD() {
   PRINT_YELLOW("testing VLAD::Vocabulary::score");
   // load vocabulary
-  DBoW3::Vocabulary dbow_vocab("../../config/sthereo_01_rgb_4_3.yaml");
+  DBoW3::Vocabulary dbow_vocab("./config/orbvoc.dbow3");
   VLAD::Vocabulary vlad_vocab(std::make_shared<DBoW3::Vocabulary>(dbow_vocab));
   std::cout << vlad_vocab << std::endl;
 
   auto orb = cv::ORB::create();
 
   VLAD::AggregationVector prev_vlad;
-  std::vector<std::string> paths = std::move(loadImagePaths("../../assets/01"));
+  std::vector<std::string> paths = std::move(loadImagePaths("/home/gvasserm/dev/rtabmap/data/samples/"));
   for (auto &path : paths) {
     cv::Mat image = cv::imread(path, cv::IMREAD_GRAYSCALE);
     std::vector<cv::KeyPoint> keypoints;

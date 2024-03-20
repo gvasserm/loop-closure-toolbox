@@ -29,6 +29,7 @@ public:
    * @param vocabulary
    */
   explicit Vocabulary(std::shared_ptr<DBoW3::Vocabulary> vocabulary);
+  //explicit Vocabulary(std::shared_ptr<DBoW3::Vocabulary> vocabulary, int levelUp);
 
   /**
    * @brief Constructor from vocabulary path
@@ -149,6 +150,7 @@ private:
 
   std::shared_ptr<DBoW3::Vocabulary> vocabulary_;
 
+  const int _levelUp;
   const int d_length_;
   const int clusters_n_;
   const int v_length_;

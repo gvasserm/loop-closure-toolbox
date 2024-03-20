@@ -4,7 +4,7 @@ def sort_key(filename):
     # Extract the base name (e.g., "1" from "1.jpg")
     basename = os.path.splitext(filename)[0].split('/')[-1]
     # Convert to integer for correct numeric sorting
-    return int(basename)
+    return int(basename.split('_')[-1])
 
 def load_images_from_folder(folder, full_path=True):
     images = []
