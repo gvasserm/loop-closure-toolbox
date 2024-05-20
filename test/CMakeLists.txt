@@ -1,5 +1,3 @@
-set(DBOW2_DIRS ../src/DBoW2/include)
-set(DBOW2_LIBS DBoW2)
 set(DBOW_DIRS ../src/DBoW3/include)
 set(DBOW_LIBS DBoW3)
 set(VLAD_DIRS ../src/VLAD/include)
@@ -8,15 +6,12 @@ set(VLAD_LIBS VLAD)
 # set(FBOW_LIBS FBOW)
 
 #include_directories(${DBOW_DIRS} ${VLAD_DIRS} ${FBOW_DIRS})
-include_directories(${DBOW2_DIRS} ${DBOW_DIRS} ${VLAD_DIRS})
+include_directories(${DBOW_DIRS} ${VLAD_DIRS})
 
-set(LIBRARIES ${DBOW2_LIBS} ${DBOW_LIBS} ${VLAD_LIBS} ${FBOW_LIBS} stdc++fs)
+set(LIBRARIES ${DBOW_LIBS} ${VLAD_LIBS} stdc++fs)
 
 add_executable(test_dbow_database test_dbow_database.cpp)
 target_link_libraries(test_dbow_database ${LIBRARIES})
-
-add_executable(test_dbow2_rtabmap test_dbow2_rtabmap.cpp)
-target_link_libraries(test_dbow2_rtabmap ${LIBRARIES})
 
 add_executable(test_dbow_rtabmap test_dbow_rtabmap.cpp)
 target_link_libraries(test_dbow_rtabmap ${LIBRARIES})
