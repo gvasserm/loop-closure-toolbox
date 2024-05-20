@@ -69,9 +69,7 @@ def train_on_images():
 
     return
 
-
-if __name__ == '__main__':
-    #descriptor_files_all = setup_train_dataset()
+def test_all():
     descriptor_files_all = setup_test_dataset()
 
     voc_name = "test_gftt"
@@ -90,3 +88,8 @@ if __name__ == '__main__':
     voc = dbow.Vocabulary(f"./config/{voc_name}_{k}_{l}.yaml")
     fpath_key = f"data/desc225.yml"
     run_on_data(voc, fpath_key, fpath_queries, plot=True)
+
+
+if __name__ == '__main__':
+    #descriptor_files_all = setup_train_dataset()
+    test_all()
