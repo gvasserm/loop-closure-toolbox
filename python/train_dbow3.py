@@ -77,7 +77,8 @@ if __name__ == '__main__':
     voc_name = "test_gftt"
     k=10
     l=5
-    #train_on_descriptors(descriptor_files_all, voc_name, k=k, l=l)
+    
+    train_on_descriptors(descriptor_files_all, voc_name, k=k, l=l)
 
     sdbow = pd.read_csv(f"data/225.csv").values
     fids = sdbow[:,0].astype(np.int32)
