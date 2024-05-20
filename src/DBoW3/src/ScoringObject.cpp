@@ -287,7 +287,8 @@ double DotProductScoring::score(const BowVector &v1,
     
     if(v1_it->first == v2_it->first)
     {
-      score += vi * wi;
+      //score += vi * wi;
+      score += wi;
       
       // move v1 and v2 forward
       ++v1_it;

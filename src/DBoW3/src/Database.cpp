@@ -750,8 +750,10 @@ void Database::queryDotProduct(
         double value;
         if(this->m_voc->getWeightingType() == BINARY)
           value = 1;
-        else
-          value = qvalue * dvalue;
+        else{
+          //value = qvalue * dvalue;
+          value = dvalue;
+        }
 
         pit = pairs.lower_bound(entry_id);
         if(pit != pairs.end() && !(pairs.key_comp()(entry_id, pit->first)))

@@ -12,6 +12,8 @@ from rclpy.serialization import deserialize_message
 from sensor_msgs.msg import Image
 import zstandard as zstd
 from tqdm import tqdm
+import os
+import json
 
 """
 Usage
@@ -99,25 +101,43 @@ def extract_image_sequence(bag_path: Path, image_topic: str, output_path: Path, 
     frame_width = None
     frame_height = None
 
-    for topic, msg, timestamp in tqdm(read_messages(bag_path, image_topic)):
+    cameraID = int(image_topic.split('camera')[-1][0])
+
+    data_info = {}
+
+    if str(output_path).split('.')[-1] == 'mp4':
+        frame_width = cv_image.shape[1]
+        frame_height = cv_image.shape[0]
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        video_writer = cv2.VideoWriter(str(output_path), fourcc, fps, (frame_width, frame_height))
+        output_dir = output_path.parent
+    else:
+        fname = f"cam_{cameraID}_frame_"
+        output_dir = output_path
+
+    for frameID, (topic, msg, timestamp) in enumerate(tqdm(read_messages(bag_path, image_topic))):
         if topic != image_topic:
             continue
         assert isinstance(msg, Image)
+
+        data_info[frameID] = timestamp
         cv_image = bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
         if is_flip:
             cv_image = cv2.rotate(cv_image, cv2.ROTATE_180)
         if video_writer is None:
-            frame_width = cv_image.shape[1]
-            frame_height = cv_image.shape[0]
-            fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-            video_writer = cv2.VideoWriter(str(output_path), fourcc, fps, (frame_width, frame_height))
-        video_writer.write(cv_image)
+            fname_ = fname + str(frameID).zfill(5) + ".png"
+            cv2.imwrite(os.path.join(output_dir, fname_), cv_image)
+        else:
+            video_writer.write(cv_image)
     if video_writer is not None:
         video_writer.release()
         print("Done.")
         print(f"Saved video to path [{output_path}].")
     else:
         print("Could not generate video from topic, are you sure the topic exists in the bag file?")
+
+    with open(output_dir / f"data_cam{cameraID}.json", "w") as f:
+        json.dump(data_info, f)
 
 
 def main():
@@ -130,7 +150,7 @@ def main():
     args = parser.parse_args()
     bag_path = Path(args.bag).expanduser()
     output_path = Path(args.output).expanduser()
-    assert output_path.suffix == '.mp4', "The only supported video format is mp4"
+    #assert output_path.suffix == '.mp4', "The only supported video format is mp4"
     assert bag_path.is_file() or bag_path.is_dir()
     extract_image_sequence(bag_path, args.topic, output_path, args.fps, args.flip)
 
