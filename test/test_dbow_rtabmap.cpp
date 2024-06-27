@@ -225,14 +225,14 @@ void testDBowVoc() {
   PRINT_YELLOW("[Loading vocabulary] start");
   std::cout << "Current path is " << fs::current_path() << '\n';
   DBoW3::Vocabulary *voc = new DBoW3::Vocabulary();
-  voc->load("/home/gvasserm/dev/loop-closure-toolbox/config/orbvoc.dbow3");
+  voc->load("/home/gvasserm/dev/loop-closure-toolbox/config/mapping_semi_static_ptk_gftt_large_dot_10_6.yaml");
   DBoW3::Database db(*voc, false, 0); // false: do not use direct index (default)
 
   std::cout << db << std::endl;
   PRINT_GREEN("[Loading vocabulary] end\n");
 
   std::vector<std::string> test_names;
-  std::string test_dir = "/home/gvasserm/dev/aicv_amr_ws/results_orb_old_default_ptk/";
+  std::string test_dir = "/home/gvasserm/dev/aicv_amr_ws/results_gftt_default_ptk/";
   std::vector<std::pair<int, double>> data = read_scores(test_dir + "224.csv");
 
   std::vector<std::string> extension={".yml"};
@@ -322,7 +322,7 @@ void testDBowDatabase()
 
 int main() {
   //testDBowDatabase();
-  trainVocDesc();
-  //testDBowVoc();
+  //trainVocDesc();
+  testDBowVoc();
   return 0;
 }

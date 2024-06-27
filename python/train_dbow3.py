@@ -15,8 +15,8 @@ import os
 
 def train_on_descriptors():
 
-    database_folder1 = "/home/gvasserm/dev/aicv_amr_ws/results_gftt_default_ptk/"
-    database_folder2 = "/home/gvasserm/dev/aicv_amr_ws/results_gftt_dbow_ptk2/"
+    database_folder1 = "/home/gvasserm/dev/aicv_amr_ws/results_lc4large_map_def/"
+    database_folder2 = "/home/gvasserm/dev/aicv_amr_ws/results_ptk4map/"
 
     descriptor_files1 = data_utils.find_images(database_folder1,["*.yml"])
     descriptor_files2 = data_utils.find_images(database_folder2,["*.yml"])
@@ -36,7 +36,7 @@ def train_on_descriptors():
     voc = dbow.Vocabulary(k, l, dbow.WeightingType.TF_IDF, scoring)
 
     voc.create(training_features)
-    voc.save(f"./config/mapping_semi_static_ptk_gftt_{k}_{l}.yaml", True)
+    voc.save(f"./config/mapping_ptk_lc4_gftt_{k}_{l}.yaml", True)
 
     return
 
