@@ -8,20 +8,12 @@ import data_utils
 import utils
 import json
 import pandas as pd
-
 from matplotlib import pyplot as plt
-
 import os
 
-def train_on_descriptors():
+from test_dbow3 import run_on_data
 
-    database_folder1 = "/home/gvasserm/dev/aicv_amr_ws/results_lc4large_map_def/"
-    database_folder2 = "/home/gvasserm/dev/aicv_amr_ws/results_ptk4map/"
-
-    descriptor_files1 = data_utils.find_images(database_folder1,["*.yml"])
-    descriptor_files2 = data_utils.find_images(database_folder2,["*.yml"])
-
-    descriptor_files_all = descriptor_files1 + descriptor_files2
+def train_on_descriptors(descriptor_files_all, voc_name, k=10, l=6):
 
     training_features = []
 
@@ -31,15 +23,29 @@ def train_on_descriptors():
                 training_features.append(descriptors)
 
     
-    k = 10; l=6
     scoring = dbow.ScoringType.L1_NORM
     voc = dbow.Vocabulary(k, l, dbow.WeightingType.TF_IDF, scoring)
 
     voc.create(training_features)
-    voc.save(f"./config/mapping_ptk_lc4_gftt_{k}_{l}.yaml", True)
+    voc.save(f"./config/{voc_name}_{k}_{l}.yaml", True)
 
     return
 
+
+def setup_train_dataset():
+     
+    database_folder1 = "/home/gvasserm/dev/aicv_amr_ws/results_gftt_default_ptk/"
+    database_folder2 = "/home/gvasserm/dev/aicv_amr_ws/results_gftt_dbow_ptk2/"
+
+    descriptor_files1 = data_utils.find_images(database_folder1,["*.yml"])
+    descriptor_files2 = data_utils.find_images(database_folder2,["*.yml"])
+
+    descriptor_files_all = descriptor_files1 + descriptor_files2
+
+    return descriptor_files_all
+
+def setup_test_dataset():
+    return data_utils.find_images("data",["*.yml"])
 
 def train_on_images():
 
@@ -63,8 +69,27 @@ def train_on_images():
 
     return
 
+def test_all():
+    descriptor_files_all = setup_test_dataset()
+
+    voc_name = "test_gftt"
+    k=10
+    l=5
+    
+    train_on_descriptors(descriptor_files_all, voc_name, k=k, l=l)
+
+    sdbow = pd.read_csv(f"data/225.csv").values
+    fids = sdbow[:,0].astype(np.int32)
+
+    fpath_queries = data_utils.find_images("data",["*.yml"])
+    d = {int(f.split('/')[-1].split("desc")[-1].split('.')[0]): f for f in fpath_queries}
+    fpath_queries = [d[i] for i in fids]
+
+    voc = dbow.Vocabulary(f"./config/{voc_name}_{k}_{l}.yaml")
+    fpath_key = f"data/desc225.yml"
+    run_on_data(voc, fpath_key, fpath_queries, plot=True)
+
 
 if __name__ == '__main__':
-    train_on_descriptors()
-
-    
+    #descriptor_files_all = setup_train_dataset()
+    test_all()

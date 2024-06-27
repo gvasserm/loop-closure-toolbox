@@ -76,3 +76,15 @@ def draw_keypoints(img, keypoints, size=4, color=(0, 0, 255)):
         cv2.circle(out_im, pt, size, color, -1, cv2.LINE_AA)
     
     return out_im
+
+
+def flip_image(image, flip_cams=[0,3]):
+
+    camIDs = [0,1,2,3]
+    cams = [[0, 640], [640, 1280], [1280, 1720], [1720, 2560]]
+
+    for cam in camIDs:
+        if cam in flip_cams:
+            image[:,cams[cam][0]:cams[cam][1]] = cv2.flip(image[:,cams[cam][0]:cams[cam][1]], 0)
+
+    return image
