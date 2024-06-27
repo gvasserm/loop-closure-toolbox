@@ -84,6 +84,5 @@ def benchmark(voc_path, dir_path):
 if __name__ == '__main__':
 
     voc_path = "config/mapping_ptk_lc4_gftt_10_6.yaml"
-    #voc_path = "config/mapping_semi_static_ptk_gftt_large_dot_10_6.yaml"
     dir_path = "/home/gvasserm/data/AMRLoopClosureData/results_ptk4map/"
     benchmark(voc_path, dir_path)
