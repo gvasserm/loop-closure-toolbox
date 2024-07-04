@@ -7,6 +7,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import pandas as pd
+import time
 
 from sklearn.metrics import precision_score, recall_score, accuracy_score
 
@@ -29,8 +30,13 @@ def query_frame(voc, dir_path, kID, plot=False):
     
     file_path = f"{dir_path}/desc{kID}.yml"
     qdescriptors = utils.load_descriptors(file_path)
-    
+    # Start the timer
+    start_time = time.time()
     results = db.query(qdescriptors, -1)
+    # End the timer
+    end_time = time.time()
+    # Calculate the elapsed time
+    elapsed_time = (end_time - start_time)/len(fids)*1e3
     res = {r[0]: r[1] for r in results}
     res1 = []
     
@@ -50,7 +56,7 @@ def query_frame(voc, dir_path, kID, plot=False):
         plt.legend(['dbow', 'default'])
         plt.show()
     
-    return res
+    return res, elapsed_time
 
 def benchmark(voc_path, dir_path):
     voc = dbow.Vocabulary(voc_path)
@@ -63,8 +69,10 @@ def benchmark(voc_path, dir_path):
     # add entries to Database
     predicted_indices = []
     ground_truth_indices = []
+    av_time = []
     for k, q in tqdm(zip(keyID_, queryID_)):
-        res = query_frame(voc, dir_path, k, plot=False)
+        res, elapsed_time = query_frame(voc, dir_path, k, plot=False)
+        av_time.append(elapsed_time)
         max_index = np.argmax(res[:, 1])
         qpred = res[max_index,0]
         predicted_indices.append(int(qpred))
@@ -74,15 +82,18 @@ def benchmark(voc_path, dir_path):
     precision = precision_score(ground_truth_indices, predicted_indices, average='macro')
     recall = recall_score(ground_truth_indices, predicted_indices, average='macro')
     accuracy = accuracy_score(ground_truth_indices, predicted_indices)
+    av_time = np.mean(av_time)
 
+    print(f"TimeAv (ms): {av_time}")
     print(f"Precision: {precision}")
     print(f"Recall: {recall}")
     print(f"Accuracy: {accuracy}")
+    print(f"Elapsed time for DBoW3 query: {elapsed_time} ms")
 
     return res
 
 if __name__ == '__main__':
 
     voc_path = "config/mapping_ptk_lc4_gftt_10_6.yaml"
-    dir_path = "/home/gvasserm/data/AMRLoopClosureData/results_ptk4map/"
+    dir_path = "/home/gvasserm/data/AMRLoopClosureData/None-warehouse_PTK-4_D455f_Cameras-static_20231121_132141692/"
     benchmark(voc_path, dir_path)

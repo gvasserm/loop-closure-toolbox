@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.0)
 
+set(CMAKE_CXX_STANDARD 14)
 project(DBoW3 VERSION 0.0.2 LANGUAGES C CXX)
+
+# Enable profiling with gprof
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -P")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -P")
+
 
 # Set build flags, depending on the architecture
 include_directories(include)

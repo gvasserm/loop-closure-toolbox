@@ -6,6 +6,7 @@ option(BUILD_TEST "Build test" ON)
 
 add_subdirectory(src/DBoW3)
 add_subdirectory(src/VLAD)
+add_subdirectory(src/fbow)
 
 IF(BUILD_PYBIND)
     add_subdirectory(python)

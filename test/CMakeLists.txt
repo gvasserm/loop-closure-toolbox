@@ -19,6 +19,9 @@ target_link_libraries(test_dbow_rtabmap ${LIBRARIES})
 add_executable(test_dbow_transform test_dbow_transform.cpp)
 target_link_libraries(test_dbow_transform ${LIBRARIES})
 
+add_executable(benchmark_dbow benchmark_dbow.cpp)
+target_link_libraries(benchmark_dbow ${LIBRARIES})
+
 add_executable(test_vlad_database test_vlad_database.cpp)
 target_link_libraries(test_vlad_database ${LIBRARIES})
 
